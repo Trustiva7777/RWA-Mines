@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/cosmos-module-instantiation.schema.json",
+  "title": "Cosmos Module Instantiation",
+  "description": "Cosmos WASM module instantiation artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["cosmoshub", "osmosis", "juno", "terra", "kava"],
+      "description": "Cosmos network"
+    },
+    "contractAddress": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Instantiated contract address"
+    },
+    "codeId": {
+      "type": "integer",
+      "description": "Code ID of the module being instantiated"
+    },
+    "creator": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Address that instantiated the contract"
+    },
+    "admin": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Admin address for the contract"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "height": {
+      "type": "integer",
+      "description": "Block height where contract was instantiated"
+    },
+    "gasUsed": {
+      "type": "integer",
+      "description": "Gas used for instantiation"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Instantiation timestamp"
+    },
+    "initMsg": {
+      "type": "object",
+      "description": "Initialization message passed to the contract"
+    },
+    "initFunds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "denom": {
+            "type": "string",
+            "description": "Token denomination"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount of tokens"
+          }
+        }
+      },
+      "description": "Initial funds sent with instantiation"
+    }
+  },
+  "required": ["network", "contractAddress", "codeId", "creator", "transactionHash", "height", "timestamp"]
+}

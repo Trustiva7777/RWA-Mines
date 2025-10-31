@@ -1,0 +1,5 @@
+{
+  "editor.formatOnSave": true,
+  "files.exclude": { "**/.DS_Store": true, "**/node_modules": false },
+  "yaml.validate": true
+}

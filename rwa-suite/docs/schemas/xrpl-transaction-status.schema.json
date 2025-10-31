@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/xrpl-transaction-status.schema.json",
+  "title": "XRPL Transaction Status",
+  "description": "XRPL transaction status check artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "testnet", "devnet"],
+      "description": "XRPL network"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash being checked"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["validated", "pending", "failed", "not-found"],
+      "description": "Current transaction status"
+    },
+    "ledgerIndex": {
+      "type": "integer",
+      "description": "Ledger index where transaction was validated (if validated)"
+    },
+    "closeTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Ledger close time (if validated)"
+    },
+    "engineResult": {
+      "type": "string",
+      "description": "Transaction engine result code"
+    },
+    "engineResultMessage": {
+      "type": "string",
+      "description": "Human-readable engine result message"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Status check timestamp"
+    },
+    "validated": {
+      "type": "boolean",
+      "description": "Whether the transaction has been validated"
+    }
+  },
+  "required": ["network", "transactionHash", "status", "timestamp"]
+}

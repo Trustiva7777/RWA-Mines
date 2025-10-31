@@ -1,77 +1,55 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build frontend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish frontend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch frontend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "build backend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish backend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch backend",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        }
-    ]
+        "tasks": [
+            {
+                "label": "Cardano: Plan lock (.NET with current slot)",
+                "type": "shell",
+                "command": "dotnet run --project rwa-suite/chains/cardano/tools/LockSlotPlan/LockSlotPlan.csproj -- plan --days ${input:lockDays} --current-slot ${input:currentSlot} --out rwa-suite/chains/cardano/reports/lock_plan.json",
+                "problemMatcher": [],
+                "group": "none"
+            },
+            {
+                "label": "Cardano: Attest (auto)",
+                "type": "shell",
+                "command": "dotnet run --project rwa-suite/chains/cardano/tools/HashAttest/HashAttest.csproj -- attest --policy ${input:policyId} --network ${input:network} --manifest rwa-suite/chains/cardano/docs/sha256-manifest.json --allowlist-file rwa-suite/chains/cardano/docs/allowlist.csv --policy-json rwa-suite/chains/cardano/policy/policy.json --before-slot $(cat rwa-suite/chains/cardano/reports/lock_plan.beforeSlot) --out rwa-suite/chains/cardano/docs/token/attestation.${input:network}.json",
+                "problemMatcher": [],
+                "group": "none"
+            },
+            {
+                "label": "Cardano: ADA ledger (.NET)",
+                "type": "shell",
+                "command": "dotnet run --project rwa-suite/packages/payouts/.dotnet/PayoutPlan/PayoutPlan.csproj -- ada-ledger --csv rwa-suite/chains/cardano/docs/qh_r1_payouts_template.csv --fx ${input:usdToAdaFx} --out rwa-suite/chains/cardano/reports/ada_ledger.csv",
+                "problemMatcher": [],
+                "group": "none"
+            },
+            {
+                "label": "Cardano: Draft ADA tx batches (.NET)",
+                "type": "shell",
+                "command": "dotnet run --project rwa-suite/chains/cardano/tools/AdaDraft/AdaDraft.csproj -- --ledger rwa-suite/chains/cardano/reports/ada_ledger.csv --out rwa-suite/chains/cardano/out/tx_batches --policy ${input:policyId} --network ${input:network} --max-outputs 80",
+                "problemMatcher": [],
+                "group": "none"
+            },
+
+                    {
+                        "label": "Cardano: Full Operator Flow (Lock → Attest → Ledger → Draft)",
+                        "type": "shell",
+                        "command": "set -e; dotnet run --project rwa-suite/chains/cardano/tools/LockSlotPlan/LockSlotPlan.csproj -- plan --days ${input:lockDays} --current-slot ${input:currentSlot} --out rwa-suite/chains/cardano/reports/lock_plan.json; dotnet run --project rwa-suite/chains/cardano/tools/HashAttest/HashAttest.csproj -- attest --policy ${input:policyId} --network ${input:network} --manifest rwa-suite/chains/cardano/docs/sha256-manifest.json --allowlist-file rwa-suite/chains/cardano/docs/allowlist.csv --policy-json rwa-suite/chains/cardano/policy/policy.json --before-slot $(cat rwa-suite/chains/cardano/reports/lock_plan.beforeSlot) --out rwa-suite/chains/cardano/docs/token/attestation.${input:network}.json; dotnet run --project rwa-suite/packages/payouts/.dotnet/PayoutPlan/PayoutPlan.csproj -- ada-ledger --csv rwa-suite/chains/cardano/docs/qh_r1_payouts_template.csv --fx ${input:usdToAdaFx} --out rwa-suite/chains/cardano/reports/ada_ledger.csv; dotnet run --project rwa-suite/chains/cardano/tools/AdaDraft/AdaDraft.csproj -- --ledger rwa-suite/chains/cardano/reports/ada_ledger.csv --out rwa-suite/chains/cardano/out/tx_batches --policy ${input:policyId} --network ${input:network} --max-outputs 80",
+                        "problemMatcher": [],
+                        "group": "none"
+                    },
+
+            { "label": "build frontend", "command": "dotnet", "type": "process", "args": ["build", "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary"], "problemMatcher": "$msCompile", "group": "build" },
+            { "label": "publish frontend", "command": "dotnet", "type": "process", "args": ["publish", "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary"], "problemMatcher": "$msCompile", "group": "build" },
+            { "label": "watch frontend", "command": "dotnet", "type": "process", "args": ["watch", "run", "--project", "${workspaceFolder}/SampleApp/FrontEnd/FrontEnd.csproj"], "problemMatcher": "$msCompile" },
+            { "label": "build backend", "command": "dotnet", "type": "process", "args": ["build", "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary"], "problemMatcher": "$msCompile", "group": "build" },
+            { "label": "publish backend", "command": "dotnet", "type": "process", "args": ["publish", "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary"], "problemMatcher": "$msCompile", "group": "build" },
+            { "label": "watch backend", "command": "dotnet", "type": "process", "args": ["watch", "run", "--project", "${workspaceFolder}/SampleApp/BackEnd/BackEnd.csproj"], "problemMatcher": "$msCompile" }
+        ],
+        "inputs": [
+            { "id": "lockDays", "type": "promptString", "description": "Days until policy lock", "default": "45" },
+            { "id": "currentSlot", "type": "promptString", "description": "Paste live slot (Preprod/Mainnet)" },
+            { "id": "policyId", "type": "promptString", "description": "PolicyId (hex)", "default": "QH-R1-DEMO" },
+            { "id": "network", "type": "pickString", "description": "Network", "options": ["Preprod", "Mainnet", "Preview"], "default": "Preprod" },
+            { "id": "usdToAdaFx", "type": "promptString", "description": "USD → ADA FX rate", "default": "0.33" }
+        ]
 }

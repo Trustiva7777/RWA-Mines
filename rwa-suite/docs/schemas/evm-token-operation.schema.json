@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/evm-token-operation.schema.json",
+  "title": "EVM Token Operation",
+  "description": "EVM token minting or transfer operation artifact",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": ["mint", "transfer"],
+      "description": "Type of token operation"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "sepolia", "polygon", "arbitrum", "optimism"],
+      "description": "EVM network name"
+    },
+    "contractAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Token contract address"
+    },
+    "fromAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Sender address"
+    },
+    "toAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Recipient address"
+    },
+    "amount": {
+      "type": "string",
+      "description": "Amount of tokens (as string to handle large numbers)"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "blockNumber": {
+      "type": "integer",
+      "description": "Block number where transaction was included"
+    },
+    "gasUsed": {
+      "type": "integer",
+      "description": "Gas used for the transaction"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Operation timestamp"
+    },
+    "tokenSymbol": {
+      "type": "string",
+      "description": "Token symbol (e.g., USDC, DAI)"
+    },
+    "tokenDecimals": {
+      "type": "integer",
+      "description": "Token decimals"
+    }
+  },
+  "required": ["operation", "network", "contractAddress", "fromAddress", "toAddress", "amount", "transactionHash", "blockNumber", "timestamp"]
+}

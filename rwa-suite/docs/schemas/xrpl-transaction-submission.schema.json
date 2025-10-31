@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/xrpl-transaction-submission.schema.json",
+  "title": "XRPL Transaction Submission",
+  "description": "XRPL transaction submission artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "testnet", "devnet"],
+      "description": "XRPL network"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "ledgerIndex": {
+      "type": "integer",
+      "description": "Ledger index where transaction was submitted"
+    },
+    "sequence": {
+      "type": "integer",
+      "description": "Account sequence number"
+    },
+    "fee": {
+      "type": "string",
+      "description": "Transaction fee in drops"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Submission timestamp"
+    },
+    "transactionType": {
+      "type": "string",
+      "enum": ["Payment", "TrustSet", "OfferCreate", "OfferCancel", "AccountSet"],
+      "description": "Type of XRPL transaction"
+    },
+    "account": {
+      "type": "string",
+      "pattern": "^r[1-9A-HJ-NP-Za-km-z]{25,34}$",
+      "description": "Account address that submitted the transaction"
+    },
+    "lastLedgerSequence": {
+      "type": "integer",
+      "description": "Last ledger sequence for transaction validity"
+    }
+  },
+  "required": ["network", "transactionHash", "ledgerIndex", "sequence", "fee", "timestamp", "transactionType", "account"]
+}

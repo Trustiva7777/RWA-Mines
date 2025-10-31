@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/cosmos-token-operation.schema.json",
+  "title": "Cosmos Token Operation",
+  "description": "Cosmos token issuance or transfer operation artifact",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": ["issue", "transfer"],
+      "description": "Type of token operation"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["cosmoshub", "osmosis", "juno", "terra", "kava"],
+      "description": "Cosmos network"
+    },
+    "denom": {
+      "type": "string",
+      "description": "Token denomination"
+    },
+    "fromAddress": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Sender address"
+    },
+    "toAddress": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Recipient address"
+    },
+    "amount": {
+      "type": "string",
+      "description": "Amount of tokens"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "height": {
+      "type": "integer",
+      "description": "Block height where transaction occurred"
+    },
+    "gasUsed": {
+      "type": "integer",
+      "description": "Gas used for the transaction"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Operation timestamp"
+    },
+    "memo": {
+      "type": "string",
+      "description": "Transaction memo"
+    },
+    "fee": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "denom": {
+                "type": "string",
+                "description": "Fee denomination"
+              },
+              "amount": {
+                "type": "string",
+                "description": "Fee amount"
+              }
+            }
+          }
+        },
+        "gas": {
+          "type": "string",
+          "description": "Gas limit"
+        }
+      },
+      "description": "Transaction fee details"
+    }
+  },
+  "required": ["operation", "network", "denom", "fromAddress", "toAddress", "amount", "transactionHash", "height", "timestamp"]
+}

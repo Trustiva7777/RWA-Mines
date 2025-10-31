@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/attestation.schema.json",
+  "title": "Attestation",
+  "description": "Cryptographic attestation for RWA manifests",
+  "type": "object",
+  "properties": {
+    "policyId": {
+      "type": "string",
+      "description": "Cardano policy ID"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "preprod", "preview"],
+      "description": "Cardano network"
+    },
+    "manifestSha256": {
+      "type": "string",
+      "description": "SHA256 hash of the manifest"
+    },
+    "allowlistSha256": {
+      "type": "string",
+      "description": "SHA256 hash of the allowlist"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Attestation timestamp"
+    },
+    "beforeSlot": {
+      "type": "integer",
+      "description": "Optional slot before which policy is valid"
+    }
+  },
+  "required": ["policyId", "network", "manifestSha256", "allowlistSha256", "timestamp"]
+}

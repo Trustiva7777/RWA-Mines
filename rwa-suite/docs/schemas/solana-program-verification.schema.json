@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/solana-program-verification.schema.json",
+  "title": "Solana Program Verification",
+  "description": "Solana program verification artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet-beta", "devnet", "testnet"],
+      "description": "Solana network"
+    },
+    "programId": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Verified program ID"
+    },
+    "verificationStatus": {
+      "type": "string",
+      "enum": ["success", "failed", "pending"],
+      "description": "Verification status"
+    },
+    "explorerUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Solana explorer URL for the program"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Verification timestamp"
+    },
+    "sourceCode": {
+      "type": "object",
+      "properties": {
+        "programName": {
+          "type": "string",
+          "description": "Name of the verified program"
+        },
+        "language": {
+          "type": "string",
+          "enum": ["Rust", "C", "AssemblyScript"],
+          "description": "Programming language used"
+        },
+        "framework": {
+          "type": "string",
+          "enum": ["Anchor", "Native", "Seahorse"],
+          "description": "Framework used for development"
+        },
+        "buildInfo": {
+          "type": "object",
+          "properties": {
+            "rustVersion": {
+              "type": "string",
+              "description": "Rust compiler version"
+            },
+            "solanaVersion": {
+              "type": "string",
+              "description": "Solana CLI version"
+            }
+          }
+        }
+      }
+    },
+    "securityAudit": {
+      "type": "object",
+      "properties": {
+        "audited": {
+          "type": "boolean",
+          "description": "Whether the program has been audited"
+        },
+        "auditReport": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to audit report"
+        }
+      }
+    }
+  },
+  "required": ["network", "programId", "verificationStatus", "timestamp"]
+}

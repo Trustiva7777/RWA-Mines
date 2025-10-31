@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/manifest.schema.json",
+  "title": "Manifest",
+  "description": "File manifest with SHA256 hashes",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "string",
+      "description": "SHA256 hash of the file"
+    }
+  },
+  "additionalProperties": false
+}

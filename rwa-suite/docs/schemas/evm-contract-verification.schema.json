@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/evm-contract-verification.schema.json",
+  "title": "EVM Contract Verification",
+  "description": "EVM smart contract verification artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "sepolia", "polygon", "arbitrum", "optimism"],
+      "description": "EVM network name"
+    },
+    "contractAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Verified contract address"
+    },
+    "verificationStatus": {
+      "type": "string",
+      "enum": ["success", "failed", "pending"],
+      "description": "Verification status"
+    },
+    "explorerUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Block explorer URL for the contract"
+    },
+    "guid": {
+      "type": "string",
+      "description": "Verification GUID from block explorer"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Verification timestamp"
+    },
+    "sourceCode": {
+      "type": "object",
+      "properties": {
+        "contractName": {
+          "type": "string",
+          "description": "Name of the verified contract"
+        },
+        "compilerVersion": {
+          "type": "string",
+          "description": "Solidity compiler version used"
+        },
+        "optimization": {
+          "type": "boolean",
+          "description": "Whether optimization was enabled"
+        },
+        "license": {
+          "type": "string",
+          "description": "Contract license type"
+        }
+      }
+    }
+  },
+  "required": ["network", "contractAddress", "verificationStatus", "timestamp"]
+}

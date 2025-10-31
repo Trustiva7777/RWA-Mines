@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/xrpl-token-operation.schema.json",
+  "title": "XRPL Token Operation",
+  "description": "XRPL token issuance or transfer operation artifact",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": ["issue", "transfer"],
+      "description": "Type of token operation"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "testnet", "devnet"],
+      "description": "XRPL network"
+    },
+    "currency": {
+      "type": "string",
+      "maxLength": 3,
+      "description": "Currency code (3-letter ISO or hex)"
+    },
+    "issuer": {
+      "type": "string",
+      "pattern": "^r[1-9A-HJ-NP-Za-km-z]{25,34}$",
+      "description": "Token issuer address"
+    },
+    "fromAddress": {
+      "type": "string",
+      "pattern": "^r[1-9A-HJ-NP-Za-km-z]{25,34}$",
+      "description": "Sender address"
+    },
+    "toAddress": {
+      "type": "string",
+      "pattern": "^r[1-9A-HJ-NP-Za-km-z]{25,34}$",
+      "description": "Recipient address"
+    },
+    "amount": {
+      "type": "string",
+      "description": "Amount of tokens"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "ledgerIndex": {
+      "type": "integer",
+      "description": "Ledger index where transaction was validated"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Operation timestamp"
+    },
+    "flags": {
+      "type": "integer",
+      "description": "Transaction flags"
+    },
+    "sequence": {
+      "type": "integer",
+      "description": "Account sequence number"
+    }
+  },
+  "required": ["operation", "network", "currency", "issuer", "fromAddress", "toAddress", "amount", "transactionHash", "ledgerIndex", "timestamp"]
+}

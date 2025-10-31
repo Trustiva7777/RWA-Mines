@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/policy.schema.json",
+  "title": "Policy",
+  "description": "Cardano minting policy configuration",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["all", "any", "atLeast"],
+      "description": "Policy type"
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["before", "after", "sig"]
+          },
+          "slot": {
+            "type": "integer",
+            "description": "Slot number for time locks"
+          },
+          "keyHash": {
+            "type": "string",
+            "description": "Public key hash for signature requirements"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+    "network": {
+      "type": "string",
+      "enum": ["Preprod", "Mainnet"],
+      "description": "Cardano network"
+    }
+  },
+  "required": ["type", "scripts"]
+}

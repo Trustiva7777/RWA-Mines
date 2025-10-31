@@ -1,0 +1,8 @@
+{
+  "allowlist.csv": "f662de329ed9a66da71a99a484aaea06794f2430373793171c3400ac590952f4",
+  "qh_r1_payouts_template.csv": "5fdaf0f6642382a45b33fa7ae61f602ab31490e79b1c61670237da6b83f6e849",
+  "sha256-manifest.json": "b6f36b30cd70bb64a3d48c7190a9e296f29aeb6c95c6e1d88deffdb79a071413",
+  "test.txt": "a1fff0ffefb9eace7230c24e50731f0a91c62f9cefdfe77121c2f607125dffae",
+  "token/attestation.Preprod.json": "0270af4854231120cf61a76a23b12ff2627e09f623d0f4ad02695487a0f2dc67",
+  "token/attestation.mainnet.json": "d727d36a2c2604aba18cb01e2d3b24c314ba43dd1ef525a1125fd1f0309468cf"
+}

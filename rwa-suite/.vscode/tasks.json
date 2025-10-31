@@ -1,0 +1,185 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Bootstrap", "type": "shell", "command": "pnpm bootstrap" },
+
+    {
+      "label": "Cardano: Proofs → manifest (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/HashAttest/HashAttest.csproj -- manifest --dir chains/cardano/docs --out chains/cardano/docs/sha256-manifest.json"
+    },
+    {
+      "label": "Cardano: Plan lock (.NET with current slot)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/PolicyTool/PolicyTool.csproj -- plan-lock --days ${input:lockDays} --current-slot ${input:currentSlot} --out chains/cardano/reports/lock_plan.json"
+    },
+    {
+      "label": "Cardano: Attest (auto)",
+      "type": "shell",
+      "command": "bash -lc 'set -e; JSONARG=\"\"; [ -f chains/cardano/policy/policy.json ] && JSONARG=\"--policy-json chains/cardano/policy/policy.json\"; EXTRA=\"\"; [ -f chains/cardano/reports/lock_plan.beforeSlot ] && EXTRA=\"--before-slot $(cat chains/cardano/reports/lock_plan.beforeSlot | tr -d \"\\r\\n\")\"; dotnet run --project chains/cardano/tools/HashAttest/HashAttest.csproj -- attest --policy ${input:policyId} --network ${input:network} --manifest chains/cardano/docs/sha256-manifest.json --allowlist-file chains/cardano/docs/allowlist.csv $JSONARG $EXTRA --out chains/cardano/docs/token/attestation.${input:network}.json'"
+    },
+
+    {
+      "label": "Cardano: Payouts → plan (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/PayoutPlan/PayoutPlan.csproj -- plan --manifest chains/cardano/docs/sha256-manifest.json --total-ada ${input:totalAda} --out chains/cardano/reports/payout_plan.json"
+    },
+    {
+      "label": "Cardano: ADA ledger (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/PayoutPlan/PayoutPlan.csproj -- ada-ledger --csv chains/cardano/docs/qh_r1_payouts_template.csv --fx ${input:usdToAda} --out chains/cardano/reports/ada_ledger.csv"
+    },
+    {
+      "label": "Cardano: Draft ADA tx batches (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/AdaDraft/AdaDraft.csproj -- draft --policy chains/cardano/policy/policy.json --attestation chains/cardano/docs/token/attestation.${input:network}.json --payout-plan chains/cardano/reports/payout_plan.json --out chains/cardano/out/tx_batches/draft.json"
+    },
+
+    {
+      "label": "Cardano: Full Operator Flow",
+      "type": "shell",
+      "command": "echo 'Run individual tasks in sequence: Lock → Attest → Ledger → Draft'",
+      "dependsOn": [
+        "Cardano: Plan lock (.NET with current slot)",
+        "Cardano: Attest (auto)",
+        "Cardano: Payouts → plan (.NET)",
+        "Cardano: ADA ledger (.NET)",
+        "Cardano: Draft ADA tx batches (.NET)"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build"
+    },
+
+    {
+      "label": "Wallet: generate (SeedGen, .NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cardano/tools/SeedGen/SeedGen.csproj -- generate --out chains/cardano/wallet/seed.json"
+    },
+
+    { "label": "EVM: install", "type": "shell", "command": "cd chains/evm/hardhat && pnpm install" },
+    { "label": "EVM: test (foundry)", "type": "shell", "command": "cd chains/evm/foundry && forge test -vv" },
+
+    {
+      "label": "EVM: Deploy Contract (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/evm/tools/ContractTool/ContractTool.csproj -- deploy --contract ${input:evmContractPath} --network ${input:evmNetwork} --out chains/evm/out/contract_deployment.json"
+    },
+    {
+      "label": "EVM: Verify Contract (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/evm/tools/ContractTool/ContractTool.csproj -- verify --address ${input:evmContractAddress} --source ${input:evmContractSource} --network ${input:evmNetwork} --out chains/evm/out/contract_verification.json"
+    },
+    {
+      "label": "EVM: Mint Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/evm/tools/TokenTool/TokenTool.csproj -- mint --contract ${input:evmContractAddress} --to ${input:recipientAddress} --amount ${input:tokenAmount} --network ${input:evmNetwork} --out chains/evm/out/token_mint.json"
+    },
+    {
+      "label": "EVM: Transfer Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/evm/tools/TokenTool/TokenTool.csproj -- transfer --contract ${input:evmContractAddress} --from ${input:senderAddress} --to ${input:recipientAddress} --amount ${input:tokenAmount} --network ${input:evmNetwork} --out chains/evm/out/token_transfer.json"
+    },
+
+    { "label": "XRPL: issuer dev", "type": "shell", "command": "cd chains/xrpl/issuer && pnpm dev" },
+
+    {
+      "label": "XRPL: Submit Transaction (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/xrpl/tools/LedgerTool/LedgerTool.csproj -- submit --tx ${input:xrplTxPath} --network ${input:xrplNetwork} --out chains/xrpl/out/tx_submission.json"
+    },
+    {
+      "label": "XRPL: Check Status (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/xrpl/tools/LedgerTool/LedgerTool.csproj -- status --hash ${input:xrplTxHash} --network ${input:xrplNetwork} --out chains/xrpl/out/tx_status.json"
+    },
+    {
+      "label": "XRPL: Issue Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/xrpl/tools/TokenTool/TokenTool.csproj -- issue --issuer ${input:xrplIssuer} --currency ${input:xrplCurrency} --amount ${input:tokenAmount} --network ${input:xrplNetwork} --out chains/xrpl/out/token_issue.json"
+    },
+    {
+      "label": "XRPL: Transfer Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/xrpl/tools/TokenTool/TokenTool.csproj -- transfer --from ${input:senderAddress} --to ${input:recipientAddress} --currency ${input:xrplCurrency} --issuer ${input:xrplIssuer} --amount ${input:tokenAmount} --network ${input:xrplNetwork} --out chains/xrpl/out/token_transfer.json"
+    },
+
+    {
+      "label": "Solana: Deploy Program (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/solana/tools/ProgramTool/ProgramTool.csproj -- deploy --program ${input:solanaProgramPath} --network ${input:solanaNetwork} --out chains/solana/out/program_deployment.json"
+    },
+    {
+      "label": "Solana: Verify Program (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/solana/tools/ProgramTool/ProgramTool.csproj -- verify --program-id ${input:solanaProgramId} --source ${input:solanaProgramSource} --network ${input:solanaNetwork} --out chains/solana/out/program_verification.json"
+    },
+    {
+      "label": "Solana: Create Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/solana/tools/TokenTool/TokenTool.csproj -- create --name ${input:solanaTokenName} --symbol ${input:solanaTokenSymbol} --decimals ${input:tokenDecimals} --network ${input:solanaNetwork} --out chains/solana/out/token_creation.json"
+    },
+    {
+      "label": "Solana: Mint Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/solana/tools/TokenTool/TokenTool.csproj -- mint --mint ${input:solanaTokenAddress} --to ${input:recipientAddress} --amount ${input:tokenAmount} --network ${input:solanaNetwork} --out chains/solana/out/token_mint.json"
+    },
+
+    {
+      "label": "Cosmos: Store Module (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cosmos/tools/ModuleTool/ModuleTool.csproj -- store --wasm ${input:cosmosWasmPath} --network ${input:cosmosNetwork} --out chains/cosmos/out/module_store.json"
+    },
+    {
+      "label": "Cosmos: Instantiate Module (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cosmos/tools/ModuleTool/ModuleTool.csproj -- instantiate --code-id ${input:cosmosCodeId} --label ${input:cosmosContractLabel} --network ${input:cosmosNetwork} --out chains/cosmos/out/module_instantiate.json"
+    },
+    {
+      "label": "Cosmos: Issue Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cosmos/tools/TokenTool/TokenTool.csproj -- issue --denom ${input:cosmosDenom} --amount ${input:tokenAmount} --recipient ${input:recipientAddress} --network ${input:cosmosNetwork} --out chains/cosmos/out/token_issue.json"
+    },
+    {
+      "label": "Cosmos: Transfer Token (.NET)",
+      "type": "shell",
+      "command": "dotnet run --project chains/cosmos/tools/TokenTool/TokenTool.csproj -- transfer --denom ${input:cosmosDenom} --amount ${input:tokenAmount} --from ${input:senderAddress} --to ${input:recipientAddress} --network ${input:cosmosNetwork} --out chains/cosmos/out/token_transfer.json"
+    },
+  ],
+  "inputs": [
+    { "id": "policyId", "type": "promptString", "description": "Cardano policyId", "default": "QH-R1-DEMO" },
+    { "id": "network", "type": "pickString", "description": "Cardano network", "options": ["Preprod","Mainnet"], "default": "Preprod" },
+    { "id": "lockDays", "type": "promptString", "description": "Days until lock", "default": "45" },
+    { "id": "currentSlot", "type": "promptString", "description": "Current slot (optional)", "default": "" },
+    { "id": "usdToAda", "type": "promptString", "description": "USD → ADA fx (e.g. 0.33)", "default": "0.33" },
+    { "id": "totalAda", "type": "promptString", "description": "Total ADA to distribute", "default": "1000000" },
+
+    { "id": "evmNetwork", "type": "pickString", "description": "EVM network", "options": ["mainnet","sepolia","polygon","arbitrum"], "default": "sepolia" },
+    { "id": "evmContractAddress", "type": "promptString", "description": "EVM contract address", "default": "0x..." },
+    { "id": "evmContractPath", "type": "promptString", "description": "EVM contract file path", "default": "chains/evm/contracts/RWA.sol" },
+    { "id": "evmContractSource", "type": "promptString", "description": "EVM contract source file", "default": "chains/evm/contracts/RWA.sol" },
+    { "id": "senderAddress", "type": "promptString", "description": "Sender address", "default": "0x..." },
+    { "id": "recipientAddress", "type": "promptString", "description": "Recipient address", "default": "0x..." },
+    { "id": "tokenAmount", "type": "promptString", "description": "Token amount", "default": "1000" },
+
+    { "id": "xrplNetwork", "type": "pickString", "description": "XRPL network", "options": ["mainnet","testnet"], "default": "testnet" },
+    { "id": "xrplTxPath", "type": "promptString", "description": "XRPL transaction file path", "default": "chains/xrpl/tx/tx.json" },
+    { "id": "xrplTxHash", "type": "promptString", "description": "XRPL transaction hash", "default": "..." },
+    { "id": "xrplCurrency", "type": "promptString", "description": "XRPL currency code", "default": "USD" },
+    { "id": "xrplIssuer", "type": "promptString", "description": "XRPL issuer address", "default": "r..." },
+
+    { "id": "solanaNetwork", "type": "pickString", "description": "Solana network", "options": ["mainnet-beta","devnet","testnet"], "default": "devnet" },
+    { "id": "solanaProgramPath", "type": "promptString", "description": "Solana program path", "default": "chains/solana/programs/target/deploy/program.so" },
+    { "id": "solanaProgramId", "type": "promptString", "description": "Solana program ID", "default": "..." },
+    { "id": "solanaProgramSource", "type": "promptString", "description": "Solana program source file", "default": "chains/solana/programs/src/lib.rs" },
+    { "id": "solanaTokenAddress", "type": "promptString", "description": "Solana token address", "default": "..." },
+    { "id": "solanaTokenName", "type": "promptString", "description": "Solana token name", "default": "RWA Token" },
+    { "id": "solanaTokenSymbol", "type": "promptString", "description": "Solana token symbol", "default": "RWA" },
+    { "id": "tokenDecimals", "type": "promptString", "description": "Token decimals", "default": "6" },
+
+    { "id": "cosmosNetwork", "type": "pickString", "description": "Cosmos network", "options": ["cosmoshub","osmosis","juno"], "default": "osmosis" },
+    { "id": "cosmosWasmPath", "type": "promptString", "description": "Cosmos WASM file path", "default": "chains/cosmos/contracts/contract.wasm" },
+    { "id": "cosmosCodeId", "type": "promptString", "description": "Cosmos code ID", "default": "1" },
+    { "id": "cosmosContractLabel", "type": "promptString", "description": "Cosmos contract label", "default": "RWA Contract" },
+    { "id": "cosmosDenom", "type": "promptString", "description": "Cosmos token denom", "default": "uatom" },
+  ]
+}

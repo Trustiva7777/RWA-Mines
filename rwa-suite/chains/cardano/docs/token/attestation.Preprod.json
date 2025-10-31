@@ -1,0 +1,9 @@
+{
+  "policyId": "QH-R1-DEMO",
+  "network": "Preprod",
+  "manifestSha256": "5a33abc398c5a9930fb28757d43393787a3dbf90b235e456e052467d2c82a964",
+  "allowlistSha256": "dfac466bac6cffe92713e70d370a4a21d260fc16b3bf4a5f30e4b6b548c99473",
+  "timestamp": "2025-10-31T00:50:44.2304546\u002B00:00",
+  "policyJsonSha256": "6139054ae659aa993fb03a48dedb73f11fe19ba4074bd157f32b6bea7da935bf",
+  "beforeSlot": "4888000"
+}

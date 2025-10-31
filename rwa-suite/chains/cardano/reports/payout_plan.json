@@ -1,0 +1,11 @@
+{
+  "totalAda": 1000000,
+  "payouts": {
+    "allowlist.csv": 166666,
+    "qh_r1_payouts_template.csv": 166666,
+    "sha256-manifest.json": 166666,
+    "test.txt": 166666,
+    "token/attestation.mainnet.json": 166666,
+    "token/attestation.Preprod.json": 166666
+  }
+}

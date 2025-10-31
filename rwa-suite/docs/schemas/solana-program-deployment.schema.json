@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/solana-program-deployment.schema.json",
+  "title": "Solana Program Deployment",
+  "description": "Solana program deployment artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet-beta", "devnet", "testnet"],
+      "description": "Solana network"
+    },
+    "programId": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Deployed program ID (public key)"
+    },
+    "deployerKeypair": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Deployer account public key"
+    },
+    "transactionSignature": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,88}$",
+      "description": "Deployment transaction signature"
+    },
+    "slot": {
+      "type": "integer",
+      "description": "Slot number where program was deployed"
+    },
+    "lamportsUsed": {
+      "type": "integer",
+      "description": "Lamports used for deployment"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Deployment timestamp"
+    },
+    "programName": {
+      "type": "string",
+      "description": "Name of the deployed program"
+    },
+    "programSize": {
+      "type": "integer",
+      "description": "Size of the program in bytes"
+    },
+    "executableAccount": {
+      "type": "boolean",
+      "description": "Whether the account is marked as executable"
+    }
+  },
+  "required": ["network", "programId", "deployerKeypair", "transactionSignature", "slot", "timestamp"]
+}

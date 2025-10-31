@@ -1,0 +1,9 @@
+{
+  "name": "rwa-suite",
+  "private": true,
+  "scripts": {
+    "bootstrap": "pnpm -r install",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
+  }
+}

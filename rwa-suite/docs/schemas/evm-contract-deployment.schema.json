@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/evm-contract-deployment.schema.json",
+  "title": "EVM Contract Deployment",
+  "description": "EVM smart contract deployment artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["mainnet", "sepolia", "polygon", "arbitrum", "optimism"],
+      "description": "EVM network name"
+    },
+    "contractAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Deployed contract address"
+    },
+    "deployerAddress": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "description": "Address that deployed the contract"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Deployment transaction hash"
+    },
+    "blockNumber": {
+      "type": "integer",
+      "description": "Block number where contract was deployed"
+    },
+    "gasUsed": {
+      "type": "integer",
+      "description": "Gas used for deployment"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Deployment timestamp"
+    },
+    "contractName": {
+      "type": "string",
+      "description": "Name of the deployed contract"
+    },
+    "compiler": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Solidity compiler version"
+        },
+        "optimizer": {
+          "type": "boolean",
+          "description": "Whether optimizer was enabled"
+        }
+      }
+    }
+  },
+  "required": ["network", "contractAddress", "deployerAddress", "transactionHash", "blockNumber", "timestamp"]
+}

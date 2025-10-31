@@ -1,0 +1,7 @@
+{
+  "policyId": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  "network": "mainnet",
+  "manifestSha256": "c2b368c263603c9b2b89785aec4a0fc1f983e61521749d037357d7bbade0e9d5",
+  "allowlistSha256": "f662de329ed9a66da71a99a484aaea06794f2430373793171c3400ac590952f4",
+  "timestamp": "2025-10-31T01:47:44.0808154\u002B00:00"
+}

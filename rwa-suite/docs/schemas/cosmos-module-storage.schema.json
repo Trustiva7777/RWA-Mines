@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/cosmos-module-storage.schema.json",
+  "title": "Cosmos Module Storage",
+  "description": "Cosmos WASM module storage artifact",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "enum": ["cosmoshub", "osmosis", "juno", "terra", "kava"],
+      "description": "Cosmos network"
+    },
+    "codeId": {
+      "type": "integer",
+      "description": "Code ID assigned to the stored module"
+    },
+    "creator": {
+      "type": "string",
+      "pattern": "^cosmos[0-9a-z]{39}$",
+      "description": "Address that stored the module"
+    },
+    "transactionHash": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$",
+      "description": "Transaction hash"
+    },
+    "height": {
+      "type": "integer",
+      "description": "Block height where module was stored"
+    },
+    "gasUsed": {
+      "type": "integer",
+      "description": "Gas used for storage"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Storage timestamp"
+    },
+    "moduleInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Module name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Module version"
+        },
+        "language": {
+          "type": "string",
+          "enum": ["Rust", "Go", "AssemblyScript"],
+          "description": "Programming language used"
+        },
+        "framework": {
+          "type": "string",
+          "description": "Framework used (e.g., CosmWasm)"
+        }
+      }
+    },
+    "wasmChecksum": {
+      "type": "string",
+      "description": "SHA256 checksum of the WASM bytecode"
+    }
+  },
+  "required": ["network", "codeId", "creator", "transactionHash", "height", "timestamp"]
+}

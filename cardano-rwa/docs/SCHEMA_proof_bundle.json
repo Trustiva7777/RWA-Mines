@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Proof Bundle",
+  "type": "object",
+  "properties": {
+    "series": { "type": "string" },
+    "network": { "type": "string", "enum": ["Mainnet", "Preprod", "Preview"] },
+    "policyId": { "type": "string" },
+    "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "allowlistSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "beforeSlot": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "required": ["network", "policyId", "manifestSha256", "allowlistSha256", "timestamp"],
+  "additionalProperties": true
+}

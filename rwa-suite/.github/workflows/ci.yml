@@ -1,0 +1,45 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install
+        run: pnpm bootstrap
+      - name: Build
+        run: pnpm -r build || true
+      - name: Test (JS)
+        run: pnpm -r test || true
+      - name: .NET
+        uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '9.0.x' }
+      - name: Build .NET tools
+        run: |
+          # Cardano tools
+          dotnet build chains/cardano/tools/HashAttest/HashAttest.csproj -v minimal
+          dotnet build chains/cardano/tools/PolicyTool/PolicyTool.csproj -v minimal
+          dotnet build chains/cardano/tools/SeedGen/SeedGen.csproj -v minimal
+          dotnet build chains/cardano/tools/PayoutPlan/PayoutPlan.csproj -v minimal
+          dotnet build chains/cardano/tools/AdaDraft/AdaDraft.csproj -v minimal
+          dotnet build chains/cardano/tools/Health/Health.csproj -v minimal
+
+          # EVM tools
+          dotnet build chains/evm/tools/ContractTool/ContractTool.csproj -v minimal
+          dotnet build chains/evm/tools/TokenTool/TokenTool.csproj -v minimal
+
+          # XRPL tools
+          dotnet build chains/xrpl/tools/LedgerTool/LedgerTool.csproj -v minimal
+          dotnet build chains/xrpl/tools/TokenTool/TokenTool.csproj -v minimal
+
+          # Solana tools
+          dotnet build chains/solana/tools/ProgramTool/ProgramTool.csproj -v minimal
+          dotnet build chains/solana/tools/TokenTool/TokenTool.csproj -v minimal
+
+          # Cosmos tools
+          dotnet build chains/cosmos/tools/ModuleTool/ModuleTool.csproj -v minimal
+          dotnet build chains/cosmos/tools/TokenTool/TokenTool.csproj -v minimal

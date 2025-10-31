@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/solana-token-operation.schema.json",
+  "title": "Solana Token Operation",
+  "description": "Solana token creation or minting operation artifact",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": ["create", "mint"],
+      "description": "Type of token operation"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["mainnet-beta", "devnet", "testnet"],
+      "description": "Solana network"
+    },
+    "tokenMint": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Token mint address"
+    },
+    "authority": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Mint authority public key"
+    },
+    "destination": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Destination account for tokens"
+    },
+    "amount": {
+      "type": "string",
+      "description": "Amount of tokens"
+    },
+    "decimals": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9,
+      "description": "Token decimals"
+    },
+    "transactionSignature": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,88}$",
+      "description": "Transaction signature"
+    },
+    "slot": {
+      "type": "integer",
+      "description": "Slot number where transaction was confirmed"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Operation timestamp"
+    },
+    "tokenSymbol": {
+      "type": "string",
+      "description": "Token symbol"
+    },
+    "tokenName": {
+      "type": "string",
+      "description": "Token name"
+    },
+    "associatedTokenAccount": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Associated token account address (for mint operations)"
+    }
+  },
+  "required": ["operation", "network", "tokenMint", "authority", "transactionSignature", "slot", "timestamp"]
+}

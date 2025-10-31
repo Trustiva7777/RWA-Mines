@@ -1,0 +1,8 @@
+{
+  "contractAddress": "cosmos1xyyasjyc2n0sxf0yfn3n3yz3rkjdetjrk5xzkzc",
+  "network": "osmosis",
+  "manifestSha256": "456789012345678901234567890123456789012345678901234567890123456789012",
+  "timestamp": "2025-10-31T01:45:00.0000000+00:00",
+  "codeId": 1234,
+  "tokenDenom": "factory/cosmos1xyyasjyc2n0sxf0yfn3n3yz3rkjdetjrk5xzkzc/URWA"
+}
